@@ -1,33 +1,32 @@
 #' @title Creating a phyloseq object.
 #' @description A simplified wrapper for creating phyloseq object.
-#' @description Copy your biom file, mapping file and tre files in one folder where you would like to store your analysis. 
+#' @description Copy your biom file, mapping file and tre files in one folder where you would like to store your analysis.
 #' @description It will automatically read the files and create the phyloseq object.
-#' @description The mapping file should alsays be named as "mapping.csv"
-#' @param x \code{\link{phyloseq-class}} object
+#' @description The mapping file should alsays be named as 'mapping.csv'
 #' @param files = 3
 #' @param path the path where all the required files are stored.
-#' @return A \code{\link{ggplot}} plot object.
+#' @return p0 \code{\link{phyloseq-class}} object.
 #' @export
 #' @examples \dontrun{
 #'   # Example data
 #'     library(microbiome)
-#'     data("NG-Tax")
-#'     p0 <- make_my_phyloseq(file = 3, path = "~/../pathtofolder")
+#'     data('NG-Tax')
+#'     p0 <- create_phyloseq_object(file = 3, path = '~/../pathtofolder')
 #'     }
 #' @keywords utilities
-make_my_phyloseq <- function(files, path){
-  if (files == 3){
-    setwd(path);
-    biom_file = list.files(pattern= ".biom$",ignore.case=TRUE);
-    mybiom <- import_biom(biom_file);
-    mapping <- list.files(pattern = "mapping.csv$");
-    meta_p1 <-read.csv(mapping,check.names=FALSE, row.names = 1);
-    map_p1 <- sample_data(meta_p1);
-    tree <- list.files(pattern = ".tre$");
-    treefile_p1 <- read.tree(tree);
-    p0 <-merge_phyloseq(mybiom, map_p1, treefile_p1)
-    } else {
-        print(" [Please type ps0 <- make_phyloseq(files = 3)]. We need three files *.biom, *mapping.csv, *.tre  and always rename your mapping files as mapping file.csv for automatic upload")
-    }
+create_phyloseq_object <- function(files, path) {
+  if (files == 3) {
+    setwd(path)
+    biom_file = list.files(pattern = ".biom$", ignore.case = TRUE)
+    mybiom <- import_biom(biom_file)
+    mapping <- list.files(pattern = "mapping.csv$")
+    meta_p1 <- read.csv(mapping, check.names = FALSE, row.names = 1)
+    map_p1 <- sample_data(meta_p1)
+    tree <- list.files(pattern = ".tre$")
+    treefile_p1 <- read.tree(tree)
+    p0 <- merge_phyloseq(mybiom, map_p1, treefile_p1)
+  } else {
+    print(" [Please type ps0 <- make_phyloseq(files = 3)]. We need three files *.biom, *mapping.csv, *.tre  and always rename your mapping files as mapping file.csv for automatic upload")
+  }
   return(p0)
 }
