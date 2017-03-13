@@ -1,79 +1,158 @@
-#' @title Probiotics Intervention Data
-#' @description The peerj32 data set contains high-through profiling data from 
-#' 389 human blood serum lipids and 130 intestinal genus-level bacteria from 
-#' 44 samples (22 subjects from 2 time points; before and after 
-#' probiotic/placebo intervention). The data set can be used to investigate 
-#' associations between intestinal bacteria and host lipid metabolism. 
-#' For details, see \url{http://dx.doi.org/10.7717/peerj.32}.
-#' @name peerj32
-#' @docType data
-#' @author Leo Lahti \email{microbiome-admin@@googlegroups.com} 
-#' @references Lahti et al. (2013) PeerJ 1:e32
-#'    \url{http://dx.doi.org/10.7717/peerj.32}
-#' @usage data(peerj32)
-#' @format List of the following data matrices as described in detail in
-#'    Lahti et al. (2013):
-#' \itemize{
-#'   \item lipids: Quantification of 389 blood serum lipids across 44 samples
-#'   \item microbes: Quantification of 130 genus-like taxa across 44 samples
-#'   \item meta: Sample metadata including time point, gender, subjectID, sampleID and treatment group (probiotic LGG / Placebo)
-#'   \item phyloseq The microbiome data set converted into a \code{\link{phyloseq-class}} object.
-#' }
-#'   
-#' @keywords data
-NULL 
+#' @importFrom ade4 s.class
+#' @importFrom compositions clr
+#' @importFrom compositions ilr
+#' @importFrom dplyr arrange
+#' @importFrom dplyr do
+#' @importFrom dplyr filter
+#' @importFrom dplyr funs
+#' @importFrom dplyr group_by
+#' @importFrom dplyr select
+#' @importFrom dplyr summarize_each
+#' @importFrom dplyr summarise
+#' @importFrom dplyr summarize
+#' @importFrom dplyr n
+#' @importFrom dplyr mutate
+#' @importFrom dplyr %>%
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 aes_string
+#' @importFrom ggplot2 coord_flip
+#' @importFrom ggplot2 coord_cartesian
+#' @importFrom ggplot2 element_blank
+#' @importFrom ggplot2 element_text
+#' @importFrom ggplot2 facet_wrap
+#' @importFrom ggplot2 geom_bar
+#' @importFrom ggplot2 geom_boxplot
+#' @importFrom ggplot2 geom_density
+#' @importFrom ggplot2 geom_histogram
+#' @importFrom ggplot2 geom_line
+#' @importFrom ggplot2 geom_linerange
+#' @importFrom ggplot2 geom_hline
+#' @importFrom ggplot2 geom_vline
+#' @importFrom ggplot2 geom_path
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 geom_polygon
+#' @importFrom ggplot2 geom_segment
+#' @importFrom ggplot2 geom_smooth
+#' @importFrom ggplot2 geom_text
+#' @importFrom ggplot2 geom_tile
+#' @importFrom ggplot2 geom_violin
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 ggtitle
+#' @importFrom ggplot2 guides
+#' @importFrom ggplot2 guide_legend
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 position_jitter
+#' @importFrom ggplot2 scale_alpha_continuous
+#' @importFrom ggplot2 scale_colour_gradient2
+#' @importFrom ggplot2 scale_x_log10
+#' @importFrom ggplot2 scale_y_log10
+#' @importFrom ggplot2 scale_fill_gradientn
+#' @importFrom ggplot2 scale_fill_gradient
+#' @importFrom ggplot2 scale_x_discrete
+#' @importFrom ggplot2 scale_x_continuous
+#' @importFrom ggplot2 scale_y_discrete
+#' @importFrom ggplot2 scale_y_continuous
+#' @importFrom ggplot2 scale_size_manual
+#' @importFrom ggplot2 scale_color_manual
+#' @importFrom ggplot2 stat_contour
+#' @importFrom ggplot2 stat_density2d
+#' @importFrom ggplot2 theme_set
+#' @importFrom ggplot2 theme_bw
+#' @importFrom ggplot2 theme
+#' @importFrom ggplot2 xlab
+#' @importFrom ggplot2 ylab
+#' @importFrom graphics axis
+#' @importFrom graphics image
+#' @importFrom graphics par
+#' @importFrom graphics plot
+#' @importFrom graphics points
+#' @importFrom graphics polygon
+#' @importFrom graphics text
+#' @importFrom grDevices chull
+#' @importFrom grDevices colorRampPalette
+#' @importFrom grDevices gray
+#' @importFrom MASS bandwidth.nrd
+#' @importFrom moments skewness
+#' @importFrom moments kurtosis
+#' @importFrom parallel mclapply
+#' @importFrom plyr colwise
+#' @importFrom plyr ddply
+#' @importFrom phyloseq estimate_richness
+#' @importFrom phyloseq get_taxa
+#' @importFrom phyloseq merge_phyloseq
+#' @importFrom phyloseq nsamples
+#' @importFrom phyloseq ntaxa
+#' @importFrom phyloseq ordinate
+#' @importFrom phyloseq otu_table
+#' @importFrom phyloseq otu_table<-
+#' @importFrom phyloseq phyloseq
+#' @importFrom phyloseq psmelt
+#' @importFrom phyloseq prune_samples
+#' @importFrom phyloseq prune_taxa
+#' @importFrom phyloseq psmelt
+#' @importFrom phyloseq sample_data
+#' @importFrom phyloseq sample_data<-
+#' @importFrom phyloseq sample_names
+#' @importFrom phyloseq sample_variables
+#' @importFrom phyloseq taxa_are_rows
+#' @importFrom phyloseq taxa_names
+#' @importFrom phyloseq taxa_sums
+#' @importFrom phyloseq tax_glom
+#' @importFrom phyloseq tax_table
+#' @importFrom phyloseq transform_sample_counts
+#' @importFrom reshape2 melt
+#' @importFrom scales comma
+#' @importFrom stats aggregate
+#' @importFrom stats anova
+#' @importFrom stats as.dist
+#' @importFrom stats coef
+#' @importFrom stats cor
+#' @importFrom stats cor.test
+#' @importFrom stats density
+#' @importFrom stats dist
+#' @importFrom stats dnorm
+#' @importFrom stats hclust
+#' @importFrom stats kernel
+#' @importFrom stats lm
+#' @importFrom stats loess
+#' @importFrom stats loess.control
+#' @importFrom stats median
+#' @importFrom stats na.fail
+#' @importFrom stats na.omit
+#' @importFrom stats p.adjust
+#' @importFrom stats pnorm
+#' @importFrom stats predict
+#' @importFrom stats quantile
+#' @importFrom stats rnorm
+#' @importFrom stats runif
+#' @importFrom stats sd
+#' @importFrom stats time
+#' @importFrom stats var
+#' @importFrom tgp interp.loess
+#' @importFrom tidyr gather
+#' @importFrom utils capture.output
+#' @importFrom utils flush.console
+#' @importFrom utils head
+#' @importFrom utils tail
+#' @importFrom utils write.csv
+#' @importFrom vegan decostand
+#' @importFrom vegan metaMDS
+#' @importFrom vegan procrustes
+#' @importFrom vegan rda
+#' @importFrom vegan scores
+#' @importFrom vegan vegdist
+#' @importFrom vegan wascores
+#' @importFrom WGCNA bicorAndPvalue
+.onAttach <- function(lib, pkg) {
+    packageStartupMessage("\nmicrobiome R package (microbiome.github.com)
+          \n\n\n Copyright (C) 2011-2017 Leo Lahti et al. <microbiome.github.io>\n")
+} 
 
-
-#' @title Diet Swap Data 
-#' @description The diet swap data set represents a study with African
-#'    and African American groups undergoing a two-week diet swap.
-#' For details, see \url{http://www.nature.com/ncomms/2015/150428/ncomms7342/full/ncomms7342.html}.
-#' @name dietswap
-#' @details The data is also available for download from the Data Dryad repository \url{http://datadryad.org/resource/doi:10.5061/dryad.1mn1n}. 
-#' @docType data
-#' @author Leo Lahti \email{microbiome-admin@@googlegroups.com} 
-#' @references 
-#'   O'Keefe et al. Nature Communications 6:6342, 2015.
-#' \url{http://www.nature.com/ncomms/2015/150428/ncomms7342/full/ncomms7342.html}
-#'   To cite the microbiome R package, see citation('microbiome') 
-#' @usage data(dietswap) 
-#' @format The data set in \code{\link{phyloseq-class}} format.  
-#' @keywords data
-NULL 
-
-
-
-#' @title HITChip Atlas with 1006 Western Adults
-#' @description This data set contains genus-level microbiota profiling with
-#'    HITChip for 1006 western adults with no reported health complications,
-#'    reported in Lahti et al. (2014)
-#' \url{http://www.nature.com/ncomms/2014/140708/ncomms5344/full/ncomms5344.html}.
-#' @name atlas1006
-#' @details The data is also available for download from the Data Dryad
-#'   \url{http://doi.org/10.5061/dryad.pk75d}. 
-#' @docType data
-#' @author Leo Lahti \email{microbiome-admin@@googlegroups.com} 
-#' @references 
-#'   Lahti et al. Tipping elements of the human intestinal ecosystem. 
-#'   Nature Communications 5:4344, 2014.
-#'   To cite the microbiome R package, see citation('microbiome') 
-#' @usage data(atlas1006) 
-#' @format The data set in \code{\link{phyloseq-class}} format.  
-#' @keywords data
-NULL 
-
-
-#' @title HITChip Taxonomy
-#' @description HITChip taxonomy table.
-#' @name hitchip.taxonomy
-#' @docType data
-#' @author Leo Lahti \email{microbiome-admin@@googlegroups.com} 
-#' @references 
-#'   Lahti et al. Tipping elements of the human intestinal ecosystem. 
-#'   Nature Communications 5:4344, 2014.
-#'   To cite the microbiome R package, see citation('microbiome') 
-#' @usage data(hitchip.taxonomy)
-#' @format List with the element 'filtered', including a simplified version
-#'         of the HITChip taxonomy.
-#' @keywords data
-NULL 
+#As far as I understand the problem, running into this error / limit is
+#_not_ the fault of the user.  Instead, I'd argue that it is the
+#responsibility of package developers to make sure to unregister any
+#registered DLLs of theirs when the package is unloaded.  A developer
+#can do this by adding the following to their package:
+#.onUnload <- function(libpath) {
+#    library.dynam.unload(utils::packageName(), libpath)
+#} 
